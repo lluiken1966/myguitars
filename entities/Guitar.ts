@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-export type GuitarType = "electric" | "acoustic" | "bass" | "classical" | "other";
-export type GuitarCondition = "mint" | "excellent" | "good" | "fair" | "poor";
+import type { GuitarType, GuitarCondition } from "@/lib/schemas";
+export type { GuitarType, GuitarCondition };
 
 @Entity("GUITARS")
 export class Guitar {
@@ -28,7 +28,7 @@ export class Guitar {
   year!: number | null;
 
   @Column({ name: "TYPE", type: "varchar2", length: 256 })
-  type!: string;
+  type!: GuitarType;
 
   @Column({ name: "COLOR", type: "varchar2", length: 100, nullable: true })
   color!: string | null;
@@ -37,7 +37,7 @@ export class Guitar {
   serialNumber!: string | null;
 
   @Column({ name: "CONDITION", type: "varchar2", length: 256 })
-  condition!: string;
+  condition!: GuitarCondition;
 
   @Column({ name: "PURCHASE_PRICE", type: "decimal", nullable: true })
   purchasePrice!: number | null;

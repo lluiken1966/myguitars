@@ -8,14 +8,17 @@
     "start": "next start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "bcryptjs": "^3.0.3",
     "next": "16.1.6",
     "next-auth": "^4.24.13",
     "oracledb": "^6.10.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.71.2",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.28",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

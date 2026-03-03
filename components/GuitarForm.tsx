@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { GuitarType, GuitarCondition } from "@/entities/Guitar";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GuitarType, GuitarCondition, GuitarSchema, GuitarInput as GuitarFormValues, GUITAR_TYPES, GUITAR_CONDITIONS } from "@/lib/schemas";
+import { createGuitar, updateGuitar } from "@/app/actions/guitars";
 
 export type GuitarData = {
   id: string;
@@ -19,42 +22,36 @@ export type GuitarData = {
   imageMimeType: string | null;
 };
 
-type GuitarFormData = {
-  brand: string;
-  model: string;
-  year: string;
-  type: GuitarType;
-  color: string;
-  serialNumber: string;
-  condition: GuitarCondition;
-  purchasePrice: string;
-  currentValue: string;
-  notes: string;
-};
-
 type Props = {
   guitar?: GuitarData;
 };
-
-const TYPES: GuitarType[] = ["electric", "acoustic", "bass", "classical", "other"];
-const CONDITIONS: GuitarCondition[] = ["mint", "excellent", "good", "fair", "poor"];
 
 export default function GuitarForm({ guitar }: Props) {
   const router = useRouter();
   const isEdit = !!guitar;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState<GuitarFormData>({
-    brand: guitar?.brand ?? "",
-    model: guitar?.model ?? "",
-    year: guitar?.year?.toString() ?? "",
-    type: guitar?.type ?? "electric",
-    color: guitar?.color ?? "",
-    serialNumber: guitar?.serialNumber ?? "",
-    condition: guitar?.condition ?? "good",
-    purchasePrice: guitar?.purchasePrice?.toString() ?? "",
-    currentValue: guitar?.currentValue?.toString() ?? "",
-    notes: guitar?.notes ?? "",
+  const [isPending, startTransition] = useTransition();
+  const [loadingImage, setLoadingImage] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(GuitarSchema),
+    defaultValues: {
+      brand: guitar?.brand ?? "",
+      model: guitar?.model ?? "",
+      year: guitar?.year ?? ("" as any),
+      type: guitar?.type ?? "electric",
+      color: guitar?.color ?? "",
+      serialNumber: guitar?.serialNumber ?? "",
+      condition: guitar?.condition ?? "good",
+      purchasePrice: guitar?.purchasePrice ?? ("" as any),
+      currentValue: guitar?.currentValue ?? ("" as any),
+      notes: guitar?.notes ?? "",
+    },
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -64,12 +61,9 @@ export default function GuitarForm({ guitar }: Props) {
   const hasExistingImage = isEdit && !!guitar.imageMimeType && !removeImage;
   const existingImageSrc = guitar ? `/api/guitars/${guitar.id}/image` : undefined;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
+  const isLoading = isPending || loadingImage;
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
@@ -92,131 +86,119 @@ export default function GuitarForm({ guitar }: Props) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  async function onSubmit(data: GuitarFormValues) {
+    setFormError("");
+    setLoadingImage(true);
 
-    const payload = {
-      brand: form.brand,
-      model: form.model,
-      year: form.year !== "" ? Number(form.year) : null,
-      type: form.type,
-      color: form.color || null,
-      serialNumber: form.serialNumber || null,
-      condition: form.condition,
-      purchasePrice: form.purchasePrice ? Number(form.purchasePrice) : null,
-      currentValue: form.currentValue ? Number(form.currentValue) : null,
-      notes: form.notes || null,
-    };
+    startTransition(async () => {
+      // 1. Save data via server action
+      const res = isEdit
+        ? await updateGuitar(guitar.id, data)
+        : await createGuitar(data);
 
-    const url = isEdit ? `/api/guitars/${guitar.id}` : "/api/guitars";
-    const method = isEdit ? "PUT" : "POST";
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error ?? "Something went wrong");
-        setLoading(false);
+      if (res.error) {
+        setFormError(res.error);
+        setLoadingImage(false);
         return;
       }
 
-      const saved: { id: string } = await res.json();
-      const guitarId = saved.id;
+      const guitarId = isEdit ? guitar.id : (res as any).id;
 
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-        const imgRes = await fetch(`/api/guitars/${guitarId}/image`, {
-          method: "POST",
-          body: formData,
-        });
-        if (!imgRes.ok) {
-          const data = await imgRes.json();
-          setLoading(false);
-          if (!isEdit) {
-            // Guitar was created — go to its edit page so a retry doesn't create a duplicate
-            router.push(`/collection/${guitarId}/edit`);
-          } else {
-            setError(data.error ?? "Image upload failed. Please try again.");
+      // 2. Handle image upload if needed
+      try {
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append("image", imageFile);
+          const imgRes = await fetch(`/api/guitars/${guitarId}/image`, {
+            method: "POST",
+            body: formData,
+          });
+          if (!imgRes.ok) {
+            setFormError("Image upload failed. Please try again.");
+            setLoadingImage(false);
+            if (!isEdit) router.push(`/collection/${guitarId}/edit`);
+            return;
           }
-          return;
+        } else if (removeImage && isEdit) {
+          await fetch(`/api/guitars/${guitarId}/image`, { method: "DELETE" });
         }
-      } else if (removeImage && isEdit) {
-        await fetch(`/api/guitars/${guitarId}/image`, { method: "DELETE" });
+      } catch {
+        setFormError("Image upload error.");
+        setLoadingImage(false);
+        if (!isEdit) router.push(`/collection/${guitarId}/edit`);
+        return;
       }
 
-      setLoading(false);
+      setLoadingImage(false);
       router.push(`/collection/${guitarId}`);
-      router.refresh();
-    } catch {
-      setLoading(false);
-      setError("Network error. Please check your connection and try again.");
-    }
+    });
   }
 
   return (
-    <form className="guitar-form" onSubmit={handleSubmit}>
-      {error && <p className="form-error">{error}</p>}
+    <form className="guitar-form" onSubmit={handleSubmit(onSubmit)}>
+      {formError && <p className="form-error">{formError}</p>}
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="brand">Brand *</label>
-          <input id="brand" name="brand" value={form.brand} onChange={handleChange} required placeholder="e.g. Fender" />
+          <input id="brand" {...register("brand")} placeholder="e.g. Fender" />
+          {errors.brand && <span className="form-error-inline">{errors.brand.message}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="model">Model *</label>
-          <input id="model" name="model" value={form.model} onChange={handleChange} required placeholder="e.g. Stratocaster" />
+          <input id="model" {...register("model")} placeholder="e.g. Stratocaster" />
+          {errors.model && <span className="form-error-inline">{errors.model.message}</span>}
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="type">Type *</label>
-          <select id="type" name="type" value={form.type} onChange={handleChange} required>
-            {TYPES.map((t) => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
+          <select id="type" {...register("type")}>
+            {GUITAR_TYPES.map((t) => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
           </select>
+          {errors.type && <span className="form-error-inline">{errors.type.message}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="condition">Condition *</label>
-          <select id="condition" name="condition" value={form.condition} onChange={handleChange} required>
-            {CONDITIONS.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+          <select id="condition" {...register("condition")}>
+            {GUITAR_CONDITIONS.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
           </select>
+          {errors.condition && <span className="form-error-inline">{errors.condition.message}</span>}
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="year">Year</label>
-          <input id="year" name="year" type="number" value={form.year} onChange={handleChange} placeholder="e.g. 1965" min="1900" max="2100" />
+          <input id="year" type="number" {...register("year")} placeholder="e.g. 1965" min="1900" max="2100" />
+          {errors.year && <span className="form-error-inline">{errors.year.message}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="color">Color</label>
-          <input id="color" name="color" value={form.color} onChange={handleChange} placeholder="e.g. Sunburst" />
+          <input id="color" {...register("color")} placeholder="e.g. Sunburst" />
+          {errors.color && <span className="form-error-inline">{errors.color.message}</span>}
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="serialNumber">Serial Number</label>
-          <input id="serialNumber" name="serialNumber" value={form.serialNumber} onChange={handleChange} placeholder="Optional" />
+          <input id="serialNumber" {...register("serialNumber")} placeholder="Optional" />
+          {errors.serialNumber && <span className="form-error-inline">{errors.serialNumber.message}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="purchasePrice">Purchase Price ($)</label>
-          <input id="purchasePrice" name="purchasePrice" type="number" step="0.01" value={form.purchasePrice} onChange={handleChange} placeholder="0.00" />
+          <input id="purchasePrice" type="number" step="0.01" {...register("purchasePrice")} placeholder="0.00" />
+          {errors.purchasePrice && <span className="form-error-inline">{errors.purchasePrice.message}</span>}
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label htmlFor="currentValue">Current Value ($)</label>
-          <input id="currentValue" name="currentValue" type="number" step="0.01" value={form.currentValue} onChange={handleChange} placeholder="0.00" />
+          <input id="currentValue" type="number" step="0.01" {...register("currentValue")} placeholder="0.00" />
+          {errors.currentValue && <span className="form-error-inline">{errors.currentValue.message}</span>}
         </div>
       </div>
 
@@ -248,15 +230,16 @@ export default function GuitarForm({ guitar }: Props) {
 
       <div className="form-group">
         <label htmlFor="notes">Notes</label>
-        <textarea id="notes" name="notes" value={form.notes} onChange={handleChange} rows={4} placeholder="Any additional notes..." />
+        <textarea id="notes" {...register("notes")} rows={4} placeholder="Any additional notes..." />
+        {errors.notes && <span className="form-error-inline">{errors.notes.message}</span>}
       </div>
 
       <div className="form-actions">
         <button type="button" className="btn btn-ghost" onClick={() => router.back()}>
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "Saving..." : isEdit ? "Save Changes" : "Add Guitar"}
+        <button type="submit" className="btn btn-primary" disabled={isLoading}>
+          {isLoading ? "Saving..." : isEdit ? "Save Changes" : "Add Guitar"}
         </button>
       </div>
     </form>

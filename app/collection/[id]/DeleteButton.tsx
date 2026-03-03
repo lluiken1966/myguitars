@@ -1,34 +1,25 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useTransition } from "react";
+import { deleteGuitar } from "@/app/actions/guitars";
 
 export default function DeleteButton({ id }: { id: string }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!confirm("Delete this guitar? This cannot be undone.")) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/guitars/${id}`, { method: "DELETE" });
-      if (!res.ok) {
-        alert("Failed to delete guitar. Please try again.");
-        setLoading(false);
-        return;
+
+    startTransition(async () => {
+      const res = await deleteGuitar(id);
+      if (res.error) {
+        alert(res.error || "Failed to delete guitar. Please try again.");
       }
-    } catch {
-      alert("Network error. Please check your connection and try again.");
-      setLoading(false);
-      return;
-    }
-    router.push("/collection");
-    router.refresh();
+    });
   }
 
   return (
-    <button className="btn btn-danger btn-sm" onClick={handleDelete} disabled={loading}>
-      {loading ? "Deleting..." : "Delete"}
+    <button className="btn btn-danger btn-sm" onClick={handleDelete} disabled={isPending}>
+      {isPending ? "Deleting..." : "Delete"}
     </button>
   );
 }
