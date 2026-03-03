@@ -5,7 +5,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { GuitarImage } from "./GuitarImage";
 
 import type { GuitarType, GuitarCondition } from "@/lib/schemas";
 export type { GuitarType, GuitarCondition };
@@ -59,4 +61,7 @@ export class Guitar {
 
   @UpdateDateColumn({ name: "UPDATED_AT" })
   updatedAt!: Date;
+
+  @OneToMany(() => GuitarImage, (image: any) => image.guitar, { cascade: true })
+  images!: any[];
 }

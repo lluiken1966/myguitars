@@ -44,7 +44,7 @@ export default function RegisterPage() {
     if (result?.error) {
       router.push("/auth/signin");
     } else {
-      router.push("/collection");
+      router.push("/");
       router.refresh();
     }
   }

@@ -8,7 +8,7 @@ import Link from "next/link";
 function SignInContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/collection";
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useTransition } from "react";
+import { useState, useRef, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,36 +54,63 @@ export default function GuitarForm({ guitar }: Props) {
     },
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [removeImage, setRemoveImage] = useState(false);
-
-  const hasExistingImage = isEdit && !!guitar.imageMimeType && !removeImage;
-  const existingImageSrc = guitar ? `/api/guitars/${guitar.id}/image` : undefined;
-
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<{ id?: string; url: string; file?: File }[]>([]);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
   const [formError, setFormError] = useState("");
 
   const isLoading = isPending || loadingImage;
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setImageFile(file);
-    setRemoveImage(false);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
+  // Load existing images on edit mount
+  useEffect(() => {
+    if (isEdit && guitar.id) {
+      fetch(`/api/guitars/${guitar.id}/images`)
+        .then(res => res.json())
+        .then((data: any[]) => {
+          if (data && data.length > 0) {
+            setImagePreviews(data.map(img => ({ id: img.id, url: `/api/guitars/${guitar.id}/images/${img.id}` })));
+          } else if (guitar.imageMimeType) {
+            // fallback legacy single image
+            setImagePreviews([{ id: "legacy", url: `/api/guitars/${guitar.id}/image` }]);
+          }
+        })
+        .catch(console.error);
     }
+  }, [isEdit, guitar]);
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+
+    setImageFiles(prev => [...prev, ...files]);
+
+    const newPreviews = files.map(file => {
+      const url = URL.createObjectURL(file);
+      return { url, file };
+    });
+
+    setImagePreviews(prev => [...prev, ...newPreviews]);
+
+    // reset input so the same files can be selected again if needed
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function handleRemoveImage() {
-    setImageFile(null);
-    setImagePreview(null);
-    setRemoveImage(true);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  function handleRemoveImage(index: number) {
+    const target = imagePreviews[index];
+
+    // If it's an existing image from DB
+    if (target.id) {
+      if (target.id === "legacy") {
+        setImagesToDelete(prev => [...prev, "legacy"]);
+      } else {
+        setImagesToDelete(prev => [...prev, target.id!]);
+      }
+    } else if (target.file) {
+      // If it's a new file, remove from imageFiles state
+      setImageFiles(prev => prev.filter(f => f !== target.file));
+    }
+
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   }
 
   async function onSubmit(data: GuitarFormValues) {
@@ -91,7 +118,7 @@ export default function GuitarForm({ guitar }: Props) {
     setLoadingImage(true);
 
     startTransition(async () => {
-      // 1. Save data via server action
+      // 1. Save guitar data
       const res = isEdit
         ? await updateGuitar(guitar.id, data)
         : await createGuitar(data);
@@ -104,33 +131,43 @@ export default function GuitarForm({ guitar }: Props) {
 
       const guitarId = isEdit ? guitar.id : (res as any).id;
 
-      // 2. Handle image upload if needed
+      // 2. Handle image uploads/deletions
       try {
-        if (imageFile) {
+        // Delete requested existing images
+        for (const idToRemove of imagesToDelete) {
+          if (idToRemove === "legacy") {
+            await fetch(`/api/guitars/${guitarId}/image`, { method: "DELETE" }); // Assuming we made a legacy delete or just ignore it for now
+          } else {
+            await fetch(`/api/guitars/${guitarId}/images/${idToRemove}`, { method: "DELETE" });
+          }
+        }
+
+        // Upload new files
+        if (imageFiles.length > 0) {
           const formData = new FormData();
-          formData.append("image", imageFile);
-          const imgRes = await fetch(`/api/guitars/${guitarId}/image`, {
+          imageFiles.forEach(file => formData.append("image", file));
+
+          const imgRes = await fetch(`/api/guitars/${guitarId}/images`, {
             method: "POST",
             body: formData,
           });
+
           if (!imgRes.ok) {
-            setFormError("Image upload failed. Please try again.");
+            setFormError("Failed to upload some images.");
             setLoadingImage(false);
-            if (!isEdit) router.push(`/collection/${guitarId}/edit`);
+            if (!isEdit) router.push(`/guitars/${guitarId}/edit`);
             return;
           }
-        } else if (removeImage && isEdit) {
-          await fetch(`/api/guitars/${guitarId}/image`, { method: "DELETE" });
         }
-      } catch {
-        setFormError("Image upload error.");
+      } catch (e) {
+        setFormError("Image synchronization error.");
         setLoadingImage(false);
-        if (!isEdit) router.push(`/collection/${guitarId}/edit`);
+        if (!isEdit) router.push(`/guitars/${guitarId}/edit`);
         return;
       }
 
       setLoadingImage(false);
-      router.push(`/collection/${guitarId}`);
+      router.push(`/guitars/${guitarId}`);
     });
   }
 
@@ -203,29 +240,42 @@ export default function GuitarForm({ guitar }: Props) {
       </div>
 
       <div className="form-group">
-        <label htmlFor="image">Photo</label>
-        {(imagePreview || hasExistingImage) && (
-          <div className="image-preview-wrap">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imagePreview ?? existingImageSrc}
-              alt="Guitar preview"
-              className="image-preview"
-            />
-            <button type="button" className="btn btn-ghost btn-sm image-remove-btn" onClick={handleRemoveImage}>
-              Remove photo
-            </button>
+        <label htmlFor="image">Photos</label>
+
+        {imagePreviews.length > 0 && (
+          <div className="image-preview-wrap" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '15px' }}>
+            {imagePreviews.map((preview, index) => (
+              <div key={index} style={{ position: 'relative' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={preview.url}
+                  alt={`Preview ${index + 1}`}
+                  className="image-preview"
+                  style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px' }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm image-remove-btn"
+                  onClick={() => handleRemoveImage(index)}
+                  style={{ position: 'absolute', top: 0, right: 0, background: 'rgba(0,0,0,0.5)', padding: '2px 6px' }}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
           </div>
         )}
+
         <input
           ref={fileInputRef}
           id="image"
           name="image"
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
+          multiple
           onChange={handleFileChange}
         />
-        <span className="form-hint">JPEG, PNG, WebP or GIF — max 10 MB</span>
+        <span className="form-hint">JPEG, PNG, WebP or GIF — max 10 MB per file</span>
       </div>
 
       <div className="form-group">

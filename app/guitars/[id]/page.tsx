@@ -6,6 +6,7 @@ import { getDataSource } from "@/lib/db";
 import { Guitar } from "@/entities/Guitar";
 import Navbar from "@/components/Navbar";
 import DeleteButton from "./DeleteButton";
+import ImageSlideshow from "@/components/ImageSlideshow";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -15,31 +16,46 @@ export default async function GuitarDetailPage({ params }: Props) {
 
   const ds = await getDataSource();
   const guitar = await ds.getRepository(Guitar).findOne({
-    where: { id, userId: session!.user.id },
+    where: { id },
+    relations: ["images"]
   });
 
   if (!guitar) notFound();
+
+  const isOwner = session?.user?.id === guitar.userId;
+
+  let urls: { id: string; url: string }[] = [];
+  if (guitar.images && guitar.images.length > 0) {
+    urls = guitar.images
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map(img => ({ id: img.id, url: `/api/guitars/${guitar.id}/images/${img.id}` }));
+  } else if (guitar.imageMimeType) {
+    urls = [{ id: "legacy", url: `/api/guitars/${guitar.id}/image` }];
+  }
 
   return (
     <>
       <Navbar />
       <main className="container">
         <div className="page-header">
-          <Link href="/collection" className="btn btn-ghost btn-sm">
+          <Link href={`/users/${guitar.userId}`} className="btn btn-ghost btn-sm">
             ← Back to collection
           </Link>
-          <div className="page-header-actions">
-            <Link href={`/collection/${guitar.id}/edit`} className="btn btn-secondary btn-sm">
-              Edit
-            </Link>
-            <DeleteButton id={guitar.id} />
-          </div>
+          {isOwner && (
+            <div className="page-header-actions">
+              <Link href={`/guitars/${guitar.id}/edit`} className="btn btn-secondary btn-sm">
+                Edit
+              </Link>
+              <DeleteButton id={guitar.id} />
+            </div>
+          )}
         </div>
 
         <div className="guitar-detail">
-          {guitar.imageMimeType && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={`/api/guitars/${guitar.id}/image`} alt={`${guitar.brand} ${guitar.model}`} className="guitar-detail-img" />
+          {urls.length > 0 && (
+            <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
+              <ImageSlideshow images={urls} alt={`${guitar.brand} ${guitar.model}`} />
+            </div>
           )}
 
           <div className="guitar-detail-info">

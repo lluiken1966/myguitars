@@ -12,9 +12,11 @@ export default async function EditGuitarPage({ params }: Props) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
 
+  if (!session?.user?.id) notFound();
+
   const ds = await getDataSource();
   const guitar = await ds.getRepository(Guitar).findOne({
-    where: { id, userId: session!.user.id },
+    where: { id, userId: session.user.id },
   });
 
   if (!guitar) notFound();

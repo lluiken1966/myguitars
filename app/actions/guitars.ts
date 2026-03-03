@@ -37,7 +37,8 @@ export async function createGuitar(formData: unknown) {
     });
 
     const saved = await repo.save(guitar);
-    revalidatePath("/collection");
+    revalidatePath("/");
+    revalidatePath(`/users/${session.user.id}`);
     return { success: true, id: saved.id };
 }
 
@@ -73,8 +74,9 @@ export async function updateGuitar(id: string, formData: unknown) {
     guitar.notes = data.notes ?? null;
 
     await repo.save(guitar);
-    revalidatePath("/collection");
-    revalidatePath(`/collection/${id}`);
+    revalidatePath("/");
+    revalidatePath(`/users/${session.user.id}`);
+    revalidatePath(`/guitars/${id}`);
 
     return { success: true };
 }
@@ -94,7 +96,8 @@ export async function deleteGuitar(id: string) {
     }
 
     await repo.remove(guitar);
-    revalidatePath("/collection");
+    revalidatePath("/");
+    revalidatePath(`/users/${session.user.id}`);
 
     return { success: true };
 }

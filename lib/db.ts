@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Guitar } from "@/entities/Guitar";
 import { User } from "@/entities/User";
+import { GuitarImage } from "@/entities/GuitarImage";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -19,7 +20,7 @@ function createDataSource() {
       walletLocation: process.env.TNS_ADMIN,
       walletPassword: process.env.ORACLE_WALLET_PASSWORD,
     },
-    entities: [Guitar, User],
+    entities: [Guitar, User, GuitarImage],
     synchronize: process.env.NODE_ENV === "development",
   });
 }
@@ -30,6 +31,7 @@ export async function getDataSource(): Promise<DataSource> {
     try {
       global._dataSource.getMetadata(Guitar);
       global._dataSource.getMetadata(User);
+      global._dataSource.getMetadata(GuitarImage);
       return global._dataSource;
     } catch {
       // Stale cache — entity classes were replaced by hot reload

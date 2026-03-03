@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDataSource } from "@/lib/db";
 import { Guitar } from "@/entities/Guitar";
+import { GuitarImage } from "@/entities/GuitarImage";
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -10,19 +11,35 @@ const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_req: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { id } = await params;
   const ds = await getDataSource();
 
+  // Try to find the first image in the new GuitarImage table
+  const guitarImage = await ds
+    .getRepository(GuitarImage)
+    .createQueryBuilder("img")
+    .select(["img.id", "img.imageData", "img.imageMimeType"])
+    .where("img.guitarId = :id", { id })
+    .orderBy("img.displayOrder", "ASC")
+    .addOrderBy("img.createdAt", "ASC")
+    .getOne();
+
+  if (guitarImage && guitarImage.imageData && guitarImage.imageMimeType) {
+    const buffer = Buffer.from(guitarImage.imageData, "base64");
+    return new NextResponse(buffer, {
+      headers: {
+        "Content-Type": guitarImage.imageMimeType,
+        "Cache-Control": "public, max-age=3600",
+      },
+    });
+  }
+
+  // Fallback to legacy single image blob in the Guitar table
   const guitar = await ds
     .getRepository(Guitar)
     .createQueryBuilder("g")
     .select(["g.id", "g.imageData", "g.imageMimeType"])
-    .where("g.id = :id AND g.userId = :userId", { id, userId: session.user.id })
+    .where("g.id = :id", { id })
     .getOne();
 
   if (!guitar || !guitar.imageData || !guitar.imageMimeType) {

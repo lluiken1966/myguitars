@@ -286,6 +286,43 @@ a {
   .badge-condition { background: #064e3b; color: #6ee7b7; }
 }
 
+/* ── User List Directory ── */
+.user-list-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.user-card-link {
+  display: block;
+  padding: 1.25rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--foreground);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.user-card-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: var(--primary);
+}
+
+.user-card-link h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+
+.user-card-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 /* ── Guitar Detail ── */
 .guitar-detail {
   display: grid;
