@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -37,6 +38,7 @@ export default function Navbar() {
             </Link>
           </>
         )}
+        <ThemeSwitcher />
       </div>
     </nav>
   );

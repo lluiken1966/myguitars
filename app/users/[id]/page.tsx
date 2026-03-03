@@ -19,11 +19,12 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
         notFound();
     }
 
-    const guitars = await ds.getRepository(Guitar).find({
+    const guitarsRaw = await ds.getRepository(Guitar).find({
         where: { userId },
         order: { createdAt: "DESC" },
         relations: ["images"]
     });
+    const guitars = JSON.parse(JSON.stringify(guitarsRaw)) as Guitar[];
 
     const isOwner = session?.user?.id === userId;
 

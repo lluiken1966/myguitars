@@ -11,15 +11,16 @@
   --radius: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --surface: #1a1a1a;
-    --border: #2a2a2a;
-    --text-muted: #9ca3af;
-  }
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: #1a1a1a;
+  --border: #2a2a2a;
+  --text-muted: #9ca3af;
 }
+
+[data-theme="dark"] .badge-type { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .badge-condition { background: #064e3b; color: #6ee7b7; }
 
 html, body {
   max-width: 100vw;
