@@ -13,8 +13,8 @@ export default async function Home() {
     <>
       <Navbar />
       <main className="container">
-        <div className="landing-hero" style={{ paddingBottom: '2rem' }}>
-          <h1 className="landing-title">🎸 My Guitars Directory</h1>
+        <div className="landing-hero" style={{ paddingBottom: '3rem', paddingTop: '1rem' }}>
+          <h1 className="landing-title text-gradient">🎸 My Guitars Directory</h1>
           <p className="landing-subtitle">Browse guitar collections from players around the world.</p>
         </div>
 
