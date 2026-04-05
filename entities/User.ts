@@ -11,13 +11,13 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ name: "EMAIL", type: "varchar2", length: 255, unique: true })
+  @Column({ name: "EMAIL", type: "varchar", length: 255, unique: true })
   email!: string;
 
-  @Column({ name: "PASSWORD", type: "varchar2", length: 255 })
+  @Column({ name: "PASSWORD", type: "varchar", length: 255 })
   password!: string; // bcrypt hash
 
-  @Column({ name: "NAME", type: "varchar2", length: 100, nullable: true })
+  @Column({ name: "NAME", type: "varchar", length: 100, nullable: true })
   name!: string | null;
 
   @CreateDateColumn({ name: "CREATED_AT" })

@@ -11,18 +11,14 @@ declare global {
 
 function createDataSource() {
   return new DataSource({
-    type: "oracle",
-    username: process.env.ORACLE_USER,
-    password: process.env.ORACLE_PASSWORD,
-    connectString: process.env.ORACLE_SERVICE,
+    type: "mysql",
+    host: process.env.MARIADB_HOST,
+    port: parseInt(process.env.MARIADB_PORT || "3306"),
+    username: process.env.MARIADB_USER,
+    password: process.env.MARIADB_PASSWORD,
+    database: process.env.MARIADB_DATABASE,
     extra: {
-      configDir: process.env.TNS_ADMIN,
-      walletLocation: process.env.TNS_ADMIN,
-      walletPassword: process.env.ORACLE_WALLET_PASSWORD,
-      // Increase timeouts and limit pool size for constrained resources
-      poolMax: 4,
-      poolMin: 0,
-      queueTimeout: 120000, // 2 minutes
+      connectionLimit: 4,
     },
     entities: [Guitar, User, GuitarImage],
     synchronize: process.env.NODE_ENV === "development",

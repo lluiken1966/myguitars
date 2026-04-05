@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["oracledb"],
+  serverExternalPackages: ["mysql2"],
   experimental: {
     // Limit build workers and memory usage for free tier OCI (1GB RAM)
     cpus: 1,

@@ -17,28 +17,28 @@ export class Guitar {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ name: "USER_ID", type: "varchar2", length: 36 })
+  @Column({ name: "USER_ID", type: "varchar", length: 36 })
   userId!: string;
 
-  @Column({ name: "BRAND", type: "varchar2", length: 100 })
+  @Column({ name: "BRAND", type: "varchar", length: 100 })
   brand!: string;
 
-  @Column({ name: "MODEL", type: "varchar2", length: 100 })
+  @Column({ name: "MODEL", type: "varchar", length: 100 })
   model!: string;
 
   @Column({ name: "YEAR", nullable: true, type: "int" })
   year!: number | null;
 
-  @Column({ name: "TYPE", type: "varchar2", length: 256 })
+  @Column({ name: "TYPE", type: "varchar", length: 256 })
   type!: GuitarType;
 
-  @Column({ name: "COLOR", type: "varchar2", length: 100, nullable: true })
+  @Column({ name: "COLOR", type: "varchar", length: 100, nullable: true })
   color!: string | null;
 
-  @Column({ name: "SERIAL_NUMBER", type: "varchar2", length: 100, nullable: true })
+  @Column({ name: "SERIAL_NUMBER", type: "varchar", length: 100, nullable: true })
   serialNumber!: string | null;
 
-  @Column({ name: "CONDITION", type: "varchar2", length: 256 })
+  @Column({ name: "CONDITION", type: "varchar", length: 256 })
   condition!: GuitarCondition;
 
   @Column({ name: "PURCHASE_PRICE", type: "decimal", nullable: true })
@@ -47,13 +47,13 @@ export class Guitar {
   @Column({ name: "CURRENT_VALUE", type: "decimal", nullable: true })
   currentValue!: number | null;
 
-  @Column({ name: "NOTES", type: "clob", nullable: true })
+  @Column({ name: "NOTES", type: "longtext", nullable: true })
   notes!: string | null;
 
-  @Column({ name: "IMAGE_DATA", type: "clob", nullable: true, select: false })
+  @Column({ name: "IMAGE_DATA", type: "longtext", nullable: true, select: false })
   imageData!: string | null;
 
-  @Column({ name: "IMAGE_MIME_TYPE", type: "varchar2", length: 100, nullable: true })
+  @Column({ name: "IMAGE_MIME_TYPE", type: "varchar", length: 100, nullable: true })
   imageMimeType!: string | null;
 
   @CreateDateColumn({ name: "CREATED_AT" })

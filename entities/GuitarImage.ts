@@ -14,13 +14,13 @@ export class GuitarImage {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column({ name: "GUITAR_ID", type: "varchar2", length: 36 })
+    @Column({ name: "GUITAR_ID", type: "varchar", length: 36 })
     guitarId!: string;
 
-    @Column({ name: "IMAGE_DATA", type: "clob", select: false })
+    @Column({ name: "IMAGE_DATA", type: "longtext", select: false })
     imageData!: string;
 
-    @Column({ name: "IMAGE_MIME_TYPE", type: "varchar2", length: 100 })
+    @Column({ name: "IMAGE_MIME_TYPE", type: "varchar", length: 100 })
     imageMimeType!: string;
 
     @Column({ name: "DISPLAY_ORDER", type: "int", default: 0 })
