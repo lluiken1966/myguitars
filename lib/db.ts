@@ -19,6 +19,10 @@ function createDataSource() {
       configDir: process.env.TNS_ADMIN,
       walletLocation: process.env.TNS_ADMIN,
       walletPassword: process.env.ORACLE_WALLET_PASSWORD,
+      // Increase timeouts and limit pool size for constrained resources
+      poolMax: 4,
+      poolMin: 0,
+      queueTimeout: 120000, // 2 minutes
     },
     entities: [Guitar, User, GuitarImage],
     synchronize: process.env.NODE_ENV === "development",
