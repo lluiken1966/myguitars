@@ -23,7 +23,7 @@ export default function Navbar() {
             </Link>
             <button
               className="btn btn-ghost btn-sm"
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
             >
               Sign out
             </button>
