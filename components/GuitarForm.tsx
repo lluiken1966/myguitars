@@ -272,6 +272,7 @@ export default function GuitarForm({ guitar }: Props) {
           name="image"
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
+          capture="environment"
           multiple
           onChange={handleFileChange}
         />
