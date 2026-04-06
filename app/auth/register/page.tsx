@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -11,11 +11,18 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -44,7 +51,12 @@ export default function RegisterPage() {
     if (result?.error) {
       router.push("/auth/signin");
     } else {
-      router.push("/");
+      const session = await getSession();
+      if (session?.user?.id) {
+        router.push(`/users/${session.user.id}`);
+      } else {
+        router.push("/");
+      }
       router.refresh();
     }
   }
@@ -93,6 +105,20 @@ export default function RegisterPage() {
               required
               autoComplete="new-password"
               placeholder="At least 8 characters"
+              minLength={8}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Repeat Password</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              placeholder="Repeat your password"
               minLength={8}
             />
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -31,7 +31,16 @@ function SignInContent() {
     if (result?.error) {
       setError("Invalid email or password");
     } else {
-      router.push(callbackUrl);
+      if (callbackUrl === "/") {
+        const session = await getSession();
+        if (session?.user?.id) {
+          router.push(`/users/${session.user.id}`);
+        } else {
+          router.push(callbackUrl);
+        }
+      } else {
+        router.push(callbackUrl);
+      }
       router.refresh();
     }
   }

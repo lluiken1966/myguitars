@@ -25,6 +25,8 @@ function createDataSource() {
   });
 }
 
+let initializationPromise: Promise<DataSource> | null = null;
+
 export async function getDataSource(): Promise<DataSource> {
   // Check if the cached DataSource is still valid (entity classes may change on hot reload)
   if (global._dataSource?.isInitialized) {
@@ -37,15 +39,18 @@ export async function getDataSource(): Promise<DataSource> {
       // Stale cache — entity classes were replaced by hot reload
       await global._dataSource.destroy();
       global._dataSource = undefined;
+      initializationPromise = null;
     }
   }
 
-  const ds = createDataSource();
-  await ds.initialize();
-
-  if (process.env.NODE_ENV !== "production") {
-    global._dataSource = ds;
+  if (!initializationPromise) {
+    initializationPromise = (async () => {
+      const ds = createDataSource();
+      await ds.initialize();
+      global._dataSource = ds;
+      return ds;
+    })();
   }
 
-  return ds;
+  return initializationPromise;
 }
