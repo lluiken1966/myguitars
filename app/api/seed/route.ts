@@ -48,8 +48,6 @@ export async function POST() {
         color: "Olympic White",
         serialNumber: "L55432",
         condition: "excellent",
-        purchasePrice: 18000,
-        currentValue: 32000,
         notes: "All-original 1965 Strat. Three-bolt neck, maple fretboard. Minor checking on the finish.",
       },
       {
@@ -61,8 +59,6 @@ export async function POST() {
         color: "Tobacco Burst",
         serialNumber: "9-1234",
         condition: "good",
-        purchasePrice: 45000,
-        currentValue: 95000,
         notes: "Holy grail burst. PAF humbuckers, Brazilian rosewood fretboard. Some buckle rash on back.",
       },
       {
@@ -74,8 +70,6 @@ export async function POST() {
         color: "Natural",
         serialNumber: "2394872",
         condition: "mint",
-        purchasePrice: 3200,
-        currentValue: 3000,
         notes: "Barely played. Sitka spruce top, East Indian rosewood back and sides. Comes with original case.",
       },
       {
@@ -87,8 +81,6 @@ export async function POST() {
         color: "Butterscotch Blonde",
         serialNumber: "348921",
         condition: "good",
-        purchasePrice: 4500,
-        currentValue: 6800,
         notes: "Ash body, maple neck. Replaced bridge pickup (original included). Great player.",
       },
       {
@@ -100,8 +92,6 @@ export async function POST() {
         color: "Natural",
         serialNumber: "1109199083",
         condition: "excellent",
-        purchasePrice: 3800,
-        currentValue: 3600,
         notes: "Grand Auditorium body, Sitka spruce top, Indian rosewood back. Expression System 2 pickup.",
       },
       {
@@ -113,8 +103,6 @@ export async function POST() {
         color: "Cherry Red",
         serialNumber: "918432",
         condition: "fair",
-        purchasePrice: 2200,
-        currentValue: 4100,
         notes: "Walnut neck, volute headstock. Heavy play wear but sounds incredible. Needs a refret.",
       },
       {
@@ -126,8 +114,6 @@ export async function POST() {
         color: "Desert Yellow",
         serialNumber: "F890432",
         condition: "excellent",
-        purchasePrice: 900,
-        currentValue: 1400,
         notes: "Made in Japan. Original Edge tremolo, DiMarzio pickups. Fujigen factory, great example of the era.",
       },
       {
@@ -139,8 +125,6 @@ export async function POST() {
         color: "Natural",
         serialNumber: null,
         condition: "mint",
-        purchasePrice: 250,
-        currentValue: 240,
         notes: "Beginner/loaner guitar. Solid spruce top, nato back and sides. Kept in studio for guests.",
       },
     ]);

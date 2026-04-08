@@ -31,8 +31,6 @@ export async function createGuitar(formData: unknown) {
         color: data.color ?? null,
         serialNumber: data.serialNumber ?? null,
         condition: data.condition,
-        purchasePrice: data.purchasePrice ?? null,
-        currentValue: data.currentValue ?? null,
         notes: data.notes ?? null,
     });
 
@@ -69,8 +67,6 @@ export async function updateGuitar(id: string, formData: unknown) {
     guitar.color = data.color ?? null;
     guitar.serialNumber = data.serialNumber ?? null;
     guitar.condition = data.condition;
-    guitar.purchasePrice = data.purchasePrice ?? null;
-    guitar.currentValue = data.currentValue ?? null;
     guitar.notes = data.notes ?? null;
 
     await repo.save(guitar);

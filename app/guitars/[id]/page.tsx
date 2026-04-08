@@ -87,16 +87,70 @@ export default async function GuitarDetailPage({ params }: Props) {
                   <dd>{guitar.serialNumber}</dd>
                 </>
               )}
-              {guitar.purchasePrice != null && (
+              {guitar.madeIn && (
                 <>
-                  <dt>Purchase Price</dt>
-                  <dd>${Number(guitar.purchasePrice).toFixed(2)}</dd>
+                  <dt>Made In</dt>
+                  <dd>{guitar.madeIn}</dd>
                 </>
               )}
-              {guitar.currentValue != null && (
+              {guitar.body && (
                 <>
-                  <dt>Current Value</dt>
-                  <dd>${Number(guitar.currentValue).toFixed(2)}</dd>
+                  <dt>Body Wood</dt>
+                  <dd>{guitar.body}</dd>
+                </>
+              )}
+              {guitar.top && (
+                <>
+                  <dt>Top Wood</dt>
+                  <dd>{guitar.top}</dd>
+                </>
+              )}
+              {guitar.neck && (
+                <>
+                  <dt>Neck Wood</dt>
+                  <dd>{guitar.neck}</dd>
+                </>
+              )}
+              {guitar.fretboard && (
+                <>
+                  <dt>Fretboard</dt>
+                  <dd>{guitar.fretboard}</dd>
+                </>
+              )}
+              {guitar.bridge && (
+                <>
+                  <dt>Bridge</dt>
+                  <dd>{guitar.bridge}</dd>
+                </>
+              )}
+              {guitar.nut && (
+                <>
+                  <dt>Nut</dt>
+                  <dd>{guitar.nut}</dd>
+                </>
+              )}
+              {guitar.neckPickup && (
+                <>
+                  <dt>Neck Pickup</dt>
+                  <dd>{guitar.neckPickup}</dd>
+                </>
+              )}
+              {guitar.middlePickup && (
+                <>
+                  <dt>Middle Pickup</dt>
+                  <dd>{guitar.middlePickup}</dd>
+                </>
+              )}
+              {guitar.bridgePickup && (
+                <>
+                  <dt>Bridge Pickup</dt>
+                  <dd>{guitar.bridgePickup}</dd>
+                </>
+              )}
+              {guitar.controls && (
+                <>
+                  <dt>Controls</dt>
+                  <dd>{guitar.controls}</dd>
                 </>
               )}
             </dl>

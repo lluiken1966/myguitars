@@ -16,8 +16,17 @@ export type GuitarData = {
   color: string | null;
   serialNumber: string | null;
   condition: GuitarCondition;
-  purchasePrice: number | null;
-  currentValue: number | null;
+  body: string | null;
+  top: string | null;
+  neck: string | null;
+  fretboard: string | null;
+  bridge: string | null;
+  nut: string | null;
+  neckPickup: string | null;
+  middlePickup: string | null;
+  bridgePickup: string | null;
+  controls: string | null;
+  madeIn: string | null;
   notes: string | null;
   imageMimeType: string | null;
 };
@@ -48,8 +57,17 @@ export default function GuitarForm({ guitar }: Props) {
       color: guitar?.color ?? "",
       serialNumber: guitar?.serialNumber ?? "",
       condition: guitar?.condition ?? "good",
-      purchasePrice: guitar?.purchasePrice ?? ("" as any),
-      currentValue: guitar?.currentValue ?? ("" as any),
+      body: guitar?.body ?? "",
+      top: guitar?.top ?? "",
+      neck: guitar?.neck ?? "",
+      fretboard: guitar?.fretboard ?? "",
+      bridge: guitar?.bridge ?? "",
+      nut: guitar?.nut ?? "",
+      neckPickup: guitar?.neckPickup ?? "",
+      middlePickup: guitar?.middlePickup ?? "",
+      bridgePickup: guitar?.bridgePickup ?? "",
+      controls: guitar?.controls ?? "",
+      madeIn: guitar?.madeIn ?? "",
       notes: guitar?.notes ?? "",
     },
   });
@@ -225,17 +243,73 @@ export default function GuitarForm({ guitar }: Props) {
           {errors.serialNumber && <span className="form-error-inline">{errors.serialNumber.message}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="purchasePrice">Purchase Price ($)</label>
-          <input id="purchasePrice" type="number" step="0.01" {...register("purchasePrice")} placeholder="0.00" />
-          {errors.purchasePrice && <span className="form-error-inline">{errors.purchasePrice.message}</span>}
+          <label htmlFor="madeIn">Made In</label>
+          <input id="madeIn" {...register("madeIn")} placeholder="e.g. USA, Japan" />
+          {errors.madeIn && <span className="form-error-inline">{errors.madeIn.message}</span>}
         </div>
       </div>
 
+      <h3 style={{ marginTop: '20px', marginBottom: '10px' }}>Construction</h3>
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="currentValue">Current Value ($)</label>
-          <input id="currentValue" type="number" step="0.01" {...register("currentValue")} placeholder="0.00" />
-          {errors.currentValue && <span className="form-error-inline">{errors.currentValue.message}</span>}
+          <label htmlFor="body">Body Wood</label>
+          <input id="body" {...register("body")} placeholder="e.g. Mahogany" />
+          {errors.body && <span className="form-error-inline">{errors.body.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="top">Top Wood</label>
+          <input id="top" {...register("top")} placeholder="e.g. Maple" />
+          {errors.top && <span className="form-error-inline">{errors.top.message}</span>}
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="neck">Neck Wood</label>
+          <input id="neck" {...register("neck")} placeholder="e.g. Mahogany" />
+          {errors.neck && <span className="form-error-inline">{errors.neck.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="fretboard">Fretboard</label>
+          <input id="fretboard" {...register("fretboard")} placeholder="e.g. Rosewood" />
+          {errors.fretboard && <span className="form-error-inline">{errors.fretboard.message}</span>}
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="bridge">Bridge</label>
+          <input id="bridge" {...register("bridge")} placeholder="e.g. Tune-o-matic" />
+          {errors.bridge && <span className="form-error-inline">{errors.bridge.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="nut">Nut</label>
+          <input id="nut" {...register("nut")} placeholder="e.g. Bone" />
+          {errors.nut && <span className="form-error-inline">{errors.nut.message}</span>}
+        </div>
+      </div>
+
+      <h3 style={{ marginTop: '20px', marginBottom: '10px' }}>Electronics</h3>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="neckPickup">Neck Pickup</label>
+          <input id="neckPickup" {...register("neckPickup")} placeholder="e.g. Seymour Duncan '59" />
+          {errors.neckPickup && <span className="form-error-inline">{errors.neckPickup.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="middlePickup">Middle Pickup</label>
+          <input id="middlePickup" {...register("middlePickup")} placeholder="e.g. Custom Single Coil" />
+          {errors.middlePickup && <span className="form-error-inline">{errors.middlePickup.message}</span>}
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="bridgePickup">Bridge Pickup</label>
+          <input id="bridgePickup" {...register("bridgePickup")} placeholder="e.g. Seymour Duncan JB" />
+          {errors.bridgePickup && <span className="form-error-inline">{errors.bridgePickup.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="controls">Controls</label>
+          <input id="controls" {...register("controls")} placeholder="e.g. 2 Vol, 2 Tone" />
+          {errors.controls && <span className="form-error-inline">{errors.controls.message}</span>}
         </div>
       </div>
 

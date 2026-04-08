@@ -41,11 +41,38 @@ export class Guitar {
   @Column({ name: "CONDITION", type: "varchar", length: 256 })
   condition!: GuitarCondition;
 
-  @Column({ name: "PURCHASE_PRICE", type: "decimal", nullable: true })
-  purchasePrice!: number | null;
+  @Column({ name: "BODY", type: "varchar", length: 256, nullable: true })
+  body!: string | null;
 
-  @Column({ name: "CURRENT_VALUE", type: "decimal", nullable: true })
-  currentValue!: number | null;
+  @Column({ name: "TOP", type: "varchar", length: 256, nullable: true })
+  top!: string | null;
+
+  @Column({ name: "NECK", type: "varchar", length: 256, nullable: true })
+  neck!: string | null;
+
+  @Column({ name: "FRETBOARD", type: "varchar", length: 256, nullable: true })
+  fretboard!: string | null;
+
+  @Column({ name: "BRIDGE", type: "varchar", length: 256, nullable: true })
+  bridge!: string | null;
+
+  @Column({ name: "NUT", type: "varchar", length: 256, nullable: true })
+  nut!: string | null;
+
+  @Column({ name: "NECK_PICKUP", type: "varchar", length: 256, nullable: true })
+  neckPickup!: string | null;
+
+  @Column({ name: "MIDDLE_PICKUP", type: "varchar", length: 256, nullable: true })
+  middlePickup!: string | null;
+
+  @Column({ name: "BRIDGE_PICKUP", type: "varchar", length: 256, nullable: true })
+  bridgePickup!: string | null;
+
+  @Column({ name: "CONTROLS", type: "varchar", length: 256, nullable: true })
+  controls!: string | null;
+
+  @Column({ name: "MADE_IN", type: "varchar", length: 256, nullable: true })
+  madeIn!: string | null;
 
   @Column({ name: "NOTES", type: "longtext", nullable: true })
   notes!: string | null;

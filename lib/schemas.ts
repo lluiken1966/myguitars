@@ -14,14 +14,17 @@ export const GuitarSchema = z.object({
   color: z.string().trim().max(100, "Color is too long").nullable().optional().transform(v => v === "" ? null : v),
   serialNumber: z.string().trim().max(100, "Serial is too long").nullable().optional().transform(v => v === "" ? null : v),
   condition: z.enum(GUITAR_CONDITIONS, { message: "Invalid condition" }),
-  purchasePrice: z.union([
-    z.coerce.number().min(0, "Price must be positive"),
-    z.literal("")
-  ]).transform(v => v === "" ? null : v).nullable().optional(),
-  currentValue: z.union([
-    z.coerce.number().min(0, "Value must be positive"),
-    z.literal("")
-  ]).transform(v => v === "" ? null : v).nullable().optional(),
+  body: z.string().trim().max(256, "Body is too long").nullable().optional().transform(v => v === "" ? null : v),
+  top: z.string().trim().max(256, "Top is too long").nullable().optional().transform(v => v === "" ? null : v),
+  neck: z.string().trim().max(256, "Neck is too long").nullable().optional().transform(v => v === "" ? null : v),
+  fretboard: z.string().trim().max(256, "Fretboard is too long").nullable().optional().transform(v => v === "" ? null : v),
+  bridge: z.string().trim().max(256, "Bridge is too long").nullable().optional().transform(v => v === "" ? null : v),
+  nut: z.string().trim().max(256, "Nut is too long").nullable().optional().transform(v => v === "" ? null : v),
+  neckPickup: z.string().trim().max(256, "Pickup is too long").nullable().optional().transform(v => v === "" ? null : v),
+  middlePickup: z.string().trim().max(256, "Pickup is too long").nullable().optional().transform(v => v === "" ? null : v),
+  bridgePickup: z.string().trim().max(256, "Pickup is too long").nullable().optional().transform(v => v === "" ? null : v),
+  controls: z.string().trim().max(256, "Controls is too long").nullable().optional().transform(v => v === "" ? null : v),
+  madeIn: z.string().trim().max(256, "Origin is too long").nullable().optional().transform(v => v === "" ? null : v),
   notes: z.string().trim().nullable().optional().transform(v => v === "" ? null : v),
 });
 
