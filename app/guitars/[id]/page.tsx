@@ -68,46 +68,61 @@ export default async function GuitarDetailPage({ params }: Props) {
               <span className={`badge badge-condition badge-${guitar.condition}`}>{guitar.condition}</span>
             </div>
 
-            <dl className="guitar-detail-specs">
-              <dt>Year</dt>
-              <dd>{guitar.year || "-"}</dd>
-              <dt>Color</dt>
-              <dd>{guitar.color || "-"}</dd>
-              <dt>Serial Number</dt>
-              <dd>{guitar.serialNumber || "-"}</dd>
-              <dt>Made In</dt>
-              <dd>{guitar.madeIn || "-"}</dd>
-              <dt>Body Wood</dt>
-              <dd>{guitar.body || "-"}</dd>
-              <dt>Top Wood</dt>
-              <dd>{guitar.top || "-"}</dd>
-              <dt>Neck Wood</dt>
-              <dd>{guitar.neck || "-"}</dd>
-              <dt>Fretboard</dt>
-              <dd>{guitar.fretboard || "-"}</dd>
-              <dt>Bridge</dt>
-              <dd>{guitar.bridge || "-"}</dd>
-              <dt>Nut</dt>
-              <dd>{guitar.nut || "-"}</dd>
-              <dt>Neck Pickup</dt>
-              <dd>{guitar.neckPickup || "-"}</dd>
-              <dt>Middle Pickup</dt>
-              <dd>{guitar.middlePickup || "-"}</dd>
-              <dt>Bridge Pickup</dt>
-              <dd>{guitar.bridgePickup || "-"}</dd>
-              <dt>Controls</dt>
-              <dd>{guitar.controls || "-"}</dd>
-              <dt>Pickup Selector</dt>
-              <dd>{guitar.pickupSelector || "-"}</dd>
-              <dt>Output Jack</dt>
-              <dd>{guitar.outputJack || "-"}</dd>
-              <dt>Frets</dt>
-              <dd>{guitar.frets || "-"}</dd>
-              <dt>Tuners</dt>
-              <dd>{guitar.tuners || "-"}</dd>
-              <dt>Finish Type</dt>
-              <dd>{guitar.finishType || "-"}</dd>
-            </dl>
+            <div className="guitar-detail-section">
+              <h3>General</h3>
+              <dl className="guitar-detail-specs">
+                <dt>Year</dt>
+                <dd>{guitar.year || "-"}</dd>
+                <dt>Color</dt>
+                <dd>{guitar.color || "-"}</dd>
+                <dt>Serial Number</dt>
+                <dd>{guitar.serialNumber || "-"}</dd>
+                <dt>Made In</dt>
+                <dd>{guitar.madeIn || "-"}</dd>
+              </dl>
+            </div>
+
+            <div className="guitar-detail-section">
+              <h3>Construction</h3>
+              <dl className="guitar-detail-specs">
+                <dt>Body Wood</dt>
+                <dd>{guitar.body || "-"}</dd>
+                <dt>Top Wood</dt>
+                <dd>{guitar.top || "-"}</dd>
+                <dt>Neck Wood</dt>
+                <dd>{guitar.neck || "-"}</dd>
+                <dt>Fretboard</dt>
+                <dd>{guitar.fretboard || "-"}</dd>
+                <dt>Bridge</dt>
+                <dd>{guitar.bridge || "-"}</dd>
+                <dt>Nut</dt>
+                <dd>{guitar.nut || "-"}</dd>
+                <dt>Frets</dt>
+                <dd>{guitar.frets || "-"}</dd>
+                <dt>Tuners</dt>
+                <dd>{guitar.tuners || "-"}</dd>
+                <dt>Finish Type</dt>
+                <dd>{guitar.finishType || "-"}</dd>
+              </dl>
+            </div>
+
+            <div className="guitar-detail-section">
+              <h3>Electronics</h3>
+              <dl className="guitar-detail-specs">
+                <dt>Neck Pickup</dt>
+                <dd>{guitar.neckPickup || "-"}</dd>
+                <dt>Middle Pickup</dt>
+                <dd>{guitar.middlePickup || "-"}</dd>
+                <dt>Bridge Pickup</dt>
+                <dd>{guitar.bridgePickup || "-"}</dd>
+                <dt>Controls</dt>
+                <dd>{guitar.controls || "-"}</dd>
+                <dt>Pickup Selector</dt>
+                <dd>{guitar.pickupSelector || "-"}</dd>
+                <dt>Output Jack</dt>
+                <dd>{guitar.outputJack || "-"}</dd>
+              </dl>
+            </div>
 
             <div className="guitar-detail-notes">
               <h3>Notes</h3>
