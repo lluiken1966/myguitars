@@ -24,6 +24,11 @@ export const GuitarSchema = z.object({
   middlePickup: z.string().trim().max(256, "Pickup is too long").nullable().optional().transform(v => v === "" ? null : v),
   bridgePickup: z.string().trim().max(256, "Pickup is too long").nullable().optional().transform(v => v === "" ? null : v),
   controls: z.string().trim().max(256, "Controls is too long").nullable().optional().transform(v => v === "" ? null : v),
+  pickupSelector: z.string().trim().max(256, "Pickup selector is too long").nullable().optional().transform(v => v === "" ? null : v),
+  outputJack: z.string().trim().max(256, "Output jack is too long").nullable().optional().transform(v => v === "" ? null : v),
+  frets: z.string().trim().max(256, "Frets is too long").nullable().optional().transform(v => v === "" ? null : v),
+  tuners: z.string().trim().max(256, "Tuners is too long").nullable().optional().transform(v => v === "" ? null : v),
+  finishType: z.string().trim().max(256, "Finish type is too long").nullable().optional().transform(v => v === "" ? null : v),
   madeIn: z.string().trim().max(256, "Origin is too long").nullable().optional().transform(v => v === "" ? null : v),
   notes: z.string().trim().nullable().optional().transform(v => v === "" ? null : v),
 });

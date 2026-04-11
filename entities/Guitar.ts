@@ -71,6 +71,21 @@ export class Guitar {
   @Column({ name: "CONTROLS", type: "varchar", length: 256, nullable: true })
   controls!: string | null;
 
+  @Column({ name: "PICKUP_SELECTOR", type: "varchar", length: 256, nullable: true })
+  pickupSelector!: string | null;
+
+  @Column({ name: "OUTPUT_JACK", type: "varchar", length: 256, nullable: true })
+  outputJack!: string | null;
+
+  @Column({ name: "FRETS", type: "varchar", length: 256, nullable: true })
+  frets!: string | null;
+
+  @Column({ name: "TUNERS", type: "varchar", length: 256, nullable: true })
+  tuners!: string | null;
+
+  @Column({ name: "FINISH_TYPE", type: "varchar", length: 256, nullable: true })
+  finishType!: string | null;
+
   @Column({ name: "MADE_IN", type: "varchar", length: 256, nullable: true })
   madeIn!: string | null;
 

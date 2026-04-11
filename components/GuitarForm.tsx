@@ -26,6 +26,11 @@ export type GuitarData = {
   middlePickup: string | null;
   bridgePickup: string | null;
   controls: string | null;
+  pickupSelector: string | null;
+  outputJack: string | null;
+  frets: string | null;
+  tuners: string | null;
+  finishType: string | null;
   madeIn: string | null;
   notes: string | null;
   imageMimeType: string | null;
@@ -67,6 +72,11 @@ export default function GuitarForm({ guitar }: Props) {
       middlePickup: guitar?.middlePickup ?? "",
       bridgePickup: guitar?.bridgePickup ?? "",
       controls: guitar?.controls ?? "",
+      pickupSelector: guitar?.pickupSelector ?? "",
+      outputJack: guitar?.outputJack ?? "",
+      frets: guitar?.frets ?? "",
+      tuners: guitar?.tuners ?? "",
+      finishType: guitar?.finishType ?? "",
       madeIn: guitar?.madeIn ?? "",
       notes: guitar?.notes ?? "",
     },
@@ -286,6 +296,25 @@ export default function GuitarForm({ guitar }: Props) {
           {errors.nut && <span className="form-error-inline">{errors.nut.message}</span>}
         </div>
       </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="frets">Frets</label>
+          <input id="frets" {...register("frets")} placeholder="e.g. 22 Medium Jumbo" />
+          {errors.frets && <span className="form-error-inline">{errors.frets.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="tuners">Tuners</label>
+          <input id="tuners" {...register("tuners")} placeholder="e.g. Grover Locking" />
+          {errors.tuners && <span className="form-error-inline">{errors.tuners.message}</span>}
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="finishType">Finish Type</label>
+          <input id="finishType" {...register("finishType")} placeholder="e.g. Nitrocellulose" />
+          {errors.finishType && <span className="form-error-inline">{errors.finishType.message}</span>}
+        </div>
+      </div>
 
       <h3 style={{ marginTop: '20px', marginBottom: '10px' }}>Electronics</h3>
       <div className="form-row">
@@ -310,6 +339,18 @@ export default function GuitarForm({ guitar }: Props) {
           <label htmlFor="controls">Controls</label>
           <input id="controls" {...register("controls")} placeholder="e.g. 2 Vol, 2 Tone" />
           {errors.controls && <span className="form-error-inline">{errors.controls.message}</span>}
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="pickupSelector">Pickup Selector</label>
+          <input id="pickupSelector" {...register("pickupSelector")} placeholder="e.g. 5-Way Switch" />
+          {errors.pickupSelector && <span className="form-error-inline">{errors.pickupSelector.message}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="outputJack">Output Jack</label>
+          <input id="outputJack" {...register("outputJack")} placeholder={'e.g. Switchcraft 1/4"'} />
+          {errors.outputJack && <span className="form-error-inline">{errors.outputJack.message}</span>}
         </div>
       </div>
 

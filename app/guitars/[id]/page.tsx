@@ -69,98 +69,50 @@ export default async function GuitarDetailPage({ params }: Props) {
             </div>
 
             <dl className="guitar-detail-specs">
-              {guitar.year && (
-                <>
-                  <dt>Year</dt>
-                  <dd>{guitar.year}</dd>
-                </>
-              )}
-              {guitar.color && (
-                <>
-                  <dt>Color</dt>
-                  <dd>{guitar.color}</dd>
-                </>
-              )}
-              {guitar.serialNumber && (
-                <>
-                  <dt>Serial Number</dt>
-                  <dd>{guitar.serialNumber}</dd>
-                </>
-              )}
-              {guitar.madeIn && (
-                <>
-                  <dt>Made In</dt>
-                  <dd>{guitar.madeIn}</dd>
-                </>
-              )}
-              {guitar.body && (
-                <>
-                  <dt>Body Wood</dt>
-                  <dd>{guitar.body}</dd>
-                </>
-              )}
-              {guitar.top && (
-                <>
-                  <dt>Top Wood</dt>
-                  <dd>{guitar.top}</dd>
-                </>
-              )}
-              {guitar.neck && (
-                <>
-                  <dt>Neck Wood</dt>
-                  <dd>{guitar.neck}</dd>
-                </>
-              )}
-              {guitar.fretboard && (
-                <>
-                  <dt>Fretboard</dt>
-                  <dd>{guitar.fretboard}</dd>
-                </>
-              )}
-              {guitar.bridge && (
-                <>
-                  <dt>Bridge</dt>
-                  <dd>{guitar.bridge}</dd>
-                </>
-              )}
-              {guitar.nut && (
-                <>
-                  <dt>Nut</dt>
-                  <dd>{guitar.nut}</dd>
-                </>
-              )}
-              {guitar.neckPickup && (
-                <>
-                  <dt>Neck Pickup</dt>
-                  <dd>{guitar.neckPickup}</dd>
-                </>
-              )}
-              {guitar.middlePickup && (
-                <>
-                  <dt>Middle Pickup</dt>
-                  <dd>{guitar.middlePickup}</dd>
-                </>
-              )}
-              {guitar.bridgePickup && (
-                <>
-                  <dt>Bridge Pickup</dt>
-                  <dd>{guitar.bridgePickup}</dd>
-                </>
-              )}
-              {guitar.controls && (
-                <>
-                  <dt>Controls</dt>
-                  <dd>{guitar.controls}</dd>
-                </>
-              )}
+              <dt>Year</dt>
+              <dd>{guitar.year || "-"}</dd>
+              <dt>Color</dt>
+              <dd>{guitar.color || "-"}</dd>
+              <dt>Serial Number</dt>
+              <dd>{guitar.serialNumber || "-"}</dd>
+              <dt>Made In</dt>
+              <dd>{guitar.madeIn || "-"}</dd>
+              <dt>Body Wood</dt>
+              <dd>{guitar.body || "-"}</dd>
+              <dt>Top Wood</dt>
+              <dd>{guitar.top || "-"}</dd>
+              <dt>Neck Wood</dt>
+              <dd>{guitar.neck || "-"}</dd>
+              <dt>Fretboard</dt>
+              <dd>{guitar.fretboard || "-"}</dd>
+              <dt>Bridge</dt>
+              <dd>{guitar.bridge || "-"}</dd>
+              <dt>Nut</dt>
+              <dd>{guitar.nut || "-"}</dd>
+              <dt>Neck Pickup</dt>
+              <dd>{guitar.neckPickup || "-"}</dd>
+              <dt>Middle Pickup</dt>
+              <dd>{guitar.middlePickup || "-"}</dd>
+              <dt>Bridge Pickup</dt>
+              <dd>{guitar.bridgePickup || "-"}</dd>
+              <dt>Controls</dt>
+              <dd>{guitar.controls || "-"}</dd>
+              <dt>Pickup Selector</dt>
+              <dd>{guitar.pickupSelector || "-"}</dd>
+              <dt>Output Jack</dt>
+              <dd>{guitar.outputJack || "-"}</dd>
+              <dt>Frets</dt>
+              <dd>{guitar.frets || "-"}</dd>
+              <dt>Tuners</dt>
+              <dd>{guitar.tuners || "-"}</dd>
+              <dt>Finish Type</dt>
+              <dd>{guitar.finishType || "-"}</dd>
             </dl>
 
-            {guitar.notes && (
-              <div className="guitar-detail-notes">
-                <h3>Notes</h3>
-                <p>{guitar.notes}</p>
-              </div>
-            )}
+            <div className="guitar-detail-notes">
+              <h3>Notes</h3>
+              <p>{guitar.notes || "-"}</p>
+            </div>
           </div>
         </div>
       </main>
