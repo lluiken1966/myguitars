@@ -3,6 +3,9 @@ import { z } from "zod";
 export const GUITAR_TYPES = ["electric", "acoustic", "bass", "classical", "other"] as const;
 export const GUITAR_CONDITIONS = ["mint", "excellent", "good", "fair", "poor"] as const;
 
+export const AMP_TYPES = ["combo", "head", "cabinet", "mini", "preamp", "other"] as const;
+export const AMP_CONDITIONS = ["mint", "excellent", "good", "fair", "poor"] as const;
+
 export const GuitarSchema = z.object({
   brand: z.string().trim().min(1, "Brand is required").max(100, "Brand is too long"),
   model: z.string().trim().min(1, "Model is required").max(100, "Model is too long"),
@@ -36,3 +39,50 @@ export const GuitarSchema = z.object({
 export type GuitarInput = z.infer<typeof GuitarSchema>;
 export type GuitarType = typeof GUITAR_TYPES[number];
 export type GuitarCondition = typeof GUITAR_CONDITIONS[number];
+
+const optStr = (max: number, label: string) =>
+  z.string().trim().max(max, `${label} is too long`).nullable().optional().transform(v => v === "" ? null : v);
+
+export const AmpSchema = z.object({
+  brand: z.string().trim().min(1, "Brand is required").max(100, "Brand is too long"),
+  model: z.string().trim().min(1, "Model is required").max(100, "Model is too long"),
+  year: z.union([
+    z.coerce.number().int().min(1900, "Year must be ≥ 1900").max(2100, "Year must be ≤ 2100"),
+    z.literal("")
+  ]).transform(v => v === "" ? null : v).nullable().optional(),
+  type: z.enum(AMP_TYPES, { message: "Invalid type" }),
+  color: z.string().trim().max(100, "Color is too long").nullable().optional().transform(v => v === "" ? null : v),
+  serialNumber: z.string().trim().max(100, "Serial is too long").nullable().optional().transform(v => v === "" ? null : v),
+  condition: z.enum(AMP_CONDITIONS, { message: "Invalid condition" }),
+  // Power & Electronics
+  wattage: optStr(256, "Wattage"),
+  channels: optStr(256, "Channels"),
+  preampTubes: optStr(256, "Preamp tubes"),
+  powerTubes: optStr(256, "Power tubes"),
+  rectifier: optStr(256, "Rectifier"),
+  outputTransformer: optStr(256, "Output transformer"),
+  // Speaker
+  speakerBrand: optStr(256, "Speaker brand"),
+  speakerModel: optStr(256, "Speaker model"),
+  speakerSize: optStr(256, "Speaker size"),
+  speakerCount: optStr(256, "Speaker count"),
+  impedance: optStr(256, "Impedance"),
+  // Cabinet
+  cabinetMaterial: optStr(256, "Cabinet material"),
+  baffle: optStr(256, "Baffle"),
+  finishType: optStr(256, "Finish type"),
+  madeIn: optStr(256, "Origin"),
+  // Controls & Effects
+  controls: optStr(256, "Controls"),
+  builtInEffects: optStr(256, "Built-in effects"),
+  effectsLoop: optStr(256, "Effects loop"),
+  footswitch: optStr(256, "Footswitch"),
+  // Connections
+  inputs: optStr(256, "Inputs"),
+  outputs: optStr(256, "Outputs"),
+  notes: z.string().trim().nullable().optional().transform(v => v === "" ? null : v),
+});
+
+export type AmpInput = z.infer<typeof AmpSchema>;
+export type AmpType = typeof AMP_TYPES[number];
+export type AmpCondition = typeof AMP_CONDITIONS[number];

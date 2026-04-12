@@ -2,8 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDataSource } from "@/lib/db";
 import { Guitar } from "@/entities/Guitar";
+import { Amp } from "@/entities/Amp";
 import { User } from "@/entities/User";
 import GuitarCard from "@/components/GuitarCard";
+import AmpCard from "@/components/AmpCard";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -26,6 +28,13 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
     });
     const guitars = JSON.parse(JSON.stringify(guitarsRaw)) as Guitar[];
 
+    const ampsRaw = await ds.getRepository(Amp).find({
+        where: { userId },
+        order: { createdAt: "DESC" },
+        relations: ["images"]
+    });
+    const amps = JSON.parse(JSON.stringify(ampsRaw)) as Amp[];
+
     const isOwner = session?.user?.id === userId;
 
     return (
@@ -35,12 +44,19 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
                 <div className="page-header">
                     <h1>{isOwner ? "My Collection" : `${user.name || user.email.split('@')[0]}'s Collection`}</h1>
                     {isOwner && (
-                        <Link href="/guitars/new" className="btn btn-primary">
-                            + Add Guitar
-                        </Link>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                            <Link href="/guitars/new" className="btn btn-primary">
+                                + Add Guitar
+                            </Link>
+                            <Link href="/amps/new" className="btn btn-primary">
+                                + Add Amp
+                            </Link>
+                        </div>
                     )}
                 </div>
 
+                {/* ── Guitars ───────────────────────────────────────────── */}
+                <h2 style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>Guitars</h2>
                 {guitars.length === 0 ? (
                     <div className="empty-state">
                         <p className="empty-icon">🎸</p>
@@ -60,6 +76,31 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
                     <div className="guitar-grid">
                         {guitars.map((g) => (
                             <GuitarCard key={g.id} guitar={g} />
+                        ))}
+                    </div>
+                )}
+
+                {/* ── Amps ──────────────────────────────────────────────── */}
+                <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>Amps</h2>
+                {amps.length === 0 ? (
+                    <div className="empty-state">
+                        <p className="empty-icon">🎛️</p>
+                        <h2>No amps yet</h2>
+                        {isOwner ? (
+                            <>
+                                <p>Add your first amp to the collection.</p>
+                                <Link href="/amps/new" className="btn btn-primary">
+                                    Add your first amp
+                                </Link>
+                            </>
+                        ) : (
+                            <p>This user hasn't added any amps to their collection.</p>
+                        )}
+                    </div>
+                ) : (
+                    <div className="guitar-grid">
+                        {amps.map((a) => (
+                            <AmpCard key={a.id} amp={a} />
                         ))}
                     </div>
                 )}

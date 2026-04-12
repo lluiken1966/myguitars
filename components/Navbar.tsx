@@ -21,6 +21,9 @@ export default function Navbar() {
             <Link href="/guitars/new" className="btn btn-primary btn-sm">
               + Add Guitar
             </Link>
+            <Link href="/amps/new" className="btn btn-primary btn-sm">
+              + Add Amp
+            </Link>
             <button
               className="btn btn-ghost btn-sm"
               onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
