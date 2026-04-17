@@ -18,7 +18,6 @@ export default function GuitarCard({ guitar }: { guitar: Guitar }) {
     <Link href={`/guitars/${guitar.id}`} className="guitar-card">
       <div
         className="guitar-card-img-wrapper"
-        style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--surface)" }}
         onClick={(e) => {
           // If the user clicks on the slideshow arrows, don't trigger the Link
           if ((e.target as HTMLElement).tagName.toLowerCase() === 'button') {

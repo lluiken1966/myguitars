@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link href="/" className="navbar-brand">
-        🎸 My Guitars
+        🎸 My <span className="brand-accent">Guitars</span>
       </Link>
       <div className="navbar-actions">
         {session ? (

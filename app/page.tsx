@@ -19,9 +19,7 @@ export default async function Home() {
         </div>
 
         <div className="users-list">
-          <h2 style={{ marginBottom: '1rem', borderBottom: '1px solid #ddd', paddingBottom: '0.5rem' }}>
-            Collectors
-          </h2>
+          <h2>Collectors</h2>
           {users.length === 0 ? (
             <p>No collectors found.</p>
           ) : (

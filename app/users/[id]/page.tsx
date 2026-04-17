@@ -56,7 +56,7 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
                 </div>
 
                 {/* ── Guitars ───────────────────────────────────────────── */}
-                <h2 style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>Guitars</h2>
+                <h2 style={{ marginTop: "2rem", marginBottom: "1.25rem" }}>Guitars</h2>
                 {guitars.length === 0 ? (
                     <div className="empty-state">
                         <p className="empty-icon">🎸</p>
@@ -81,7 +81,7 @@ export default async function UserOverviewPage({ params }: { params: Promise<{ i
                 )}
 
                 {/* ── Amps ──────────────────────────────────────────────── */}
-                <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>Amps</h2>
+                <h2 style={{ marginTop: "3rem", marginBottom: "1.25rem" }}>Amps</h2>
                 {amps.length === 0 ? (
                     <div className="empty-state">
                         <p className="empty-icon">🎛️</p>

@@ -16,7 +16,6 @@ export default function AmpCard({ amp }: { amp: Amp }) {
     <Link href={`/amps/${amp.id}`} className="guitar-card">
       <div
         className="guitar-card-img-wrapper"
-        style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--surface)" }}
         onClick={(e) => {
           if ((e.target as HTMLElement).tagName.toLowerCase() === "button") {
             e.preventDefault();
