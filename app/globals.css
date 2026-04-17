@@ -378,6 +378,70 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
 }
 
+/* Mobile: hamburger + theme only */
+.navbar-mobile-controls {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.navbar-hamburger {
+  font-size: 1.1rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* Mobile dropdown — absolutely positioned below sticky navbar */
+.navbar-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.75rem 0.75rem;
+  gap: 0.15rem;
+  z-index: 48;
+}
+
+.navbar-mobile-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground);
+  text-decoration: none;
+  border-radius: var(--radius);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navbar-mobile-link:hover {
+  background: var(--primary-pale);
+  color: var(--primary);
+}
+
+.navbar-mobile-primary {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .navbar-actions {
+    display: none;
+  }
+  .navbar-mobile-controls {
+    display: flex;
+  }
+}
+
 /* =============================================================================
    BUTTONS — Rectangular, uppercase, editorial
 ============================================================================= */
