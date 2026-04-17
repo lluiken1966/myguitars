@@ -20,6 +20,9 @@ export class User {
   @Column({ name: "NAME", type: "varchar", length: 100, nullable: true })
   name!: string | null;
 
+  @Column({ name: "TOKEN_VERSION", type: "int", default: 1 })
+  tokenVersion!: number;
+
   @CreateDateColumn({ name: "CREATED_AT" })
   createdAt!: Date;
 }

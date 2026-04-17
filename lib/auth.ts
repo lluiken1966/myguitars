@@ -38,12 +38,29 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        const ds = await getDataSource();
+        const dbUser = await ds.getRepository(User).findOne({ where: { id: user.id } });
+        if (dbUser) {
+          token.tokenVersion = dbUser.tokenVersion;
+        }
+      } else if (token.sub) {
+        const ds = await getDataSource();
+        const dbUser = await ds.getRepository(User).findOne({
+          where: { id: token.sub },
+          select: ["id", "tokenVersion"],
+        });
+        if (!dbUser || dbUser.tokenVersion !== token.tokenVersion) {
+          return {} as typeof token;
+        }
       }
       return token;
     },
     async session({ session, token }) {
+      if (!token.sub) {
+        return {} as typeof session;
+      }
       if (session.user) {
-        session.user.id = token.sub!;
+        session.user.id = token.sub;
       }
       return session;
     },
