@@ -86,3 +86,29 @@ export const AmpSchema = z.object({
 export type AmpInput = z.infer<typeof AmpSchema>;
 export type AmpType = typeof AMP_TYPES[number];
 export type AmpCondition = typeof AMP_CONDITIONS[number];
+
+export const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[a-z]/, "Password must contain a lowercase letter")
+  .regex(/[A-Z]/, "Password must contain an uppercase letter")
+  .regex(/[0-9]/, "Password must contain a digit")
+  .regex(/[^a-zA-Z0-9]/, "Password must contain a special character");
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().length(64, "Invalid token"),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
