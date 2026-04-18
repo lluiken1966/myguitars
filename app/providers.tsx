@@ -5,7 +5,7 @@ import { ThemeProvider } from "next-themes";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem themes={["light", "dark", "vintage", "retro"]}>
+    <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem themes={["light", "dark", "vintage", "retro", "cartoon"]}>
       <SessionProvider>{children}</SessionProvider>
     </ThemeProvider>
   );
