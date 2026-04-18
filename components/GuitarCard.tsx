@@ -36,7 +36,7 @@ export default function GuitarCard({ guitar }: { guitar: Guitar }) {
         <h3 className="guitar-card-title">
           {guitar.brand} {guitar.model}
         </h3>
-        {guitar.year && <p className="guitar-card-year">{guitar.year}</p>}
+        {guitar.notes && <p className="guitar-card-notes">{guitar.notes}</p>}
         <div className="guitar-card-badges">
           <span className={`badge badge-type badge-${guitar.type}`}>{guitar.type}</span>
           <span className={`badge badge-condition badge-${guitar.condition}`}>{guitar.condition}</span>

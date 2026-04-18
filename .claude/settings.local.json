@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:en.wikipedia.org)"
+      "WebFetch(domain:en.wikipedia.org)",
+      "Read(//home/leon/.claude/plugins/**)",
+      "Read(//home/leon/.claude/skills/**)",
+      "Bash(xdg-open /home/leon/github/myguitars/session-report-20260417-1926.html)",
+      "WebSearch",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
