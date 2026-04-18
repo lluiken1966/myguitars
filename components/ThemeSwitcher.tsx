@@ -15,13 +15,14 @@ export default function ThemeSwitcher() {
         return <div style={{ width: '28px', height: '28px' }}></div>; // placeholder
     }
 
-    const cycle: Record<string, string> = { light: "dark", dark: "vintage", vintage: "retro", retro: "light" };
-    const icons: Record<string, string> = { light: "🌙", dark: "📷", vintage: "📻", retro: "☀️" };
+    const cycle: Record<string, string> = { light: "dark", dark: "vintage", vintage: "retro", retro: "cartoon", cartoon: "light" };
+    const icons: Record<string, string> = { light: "🌙", dark: "📷", vintage: "📻", retro: "💥", cartoon: "☀️" };
     const labels: Record<string, string> = {
         light: "Switch to dark mode",
         dark: "Switch to vintage mode",
         vintage: "Switch to retro mode",
-        retro: "Switch to light mode",
+        retro: "Switch to cartoon mode",
+        cartoon: "Switch to light mode",
     };
     const currentTheme = theme ?? "light";
     const nextTheme = cycle[currentTheme] ?? "light";

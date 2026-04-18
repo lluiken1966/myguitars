@@ -223,6 +223,150 @@
 }
 
 /* =============================================================================
+   CARTOON THEME — Comic Book / Cel-Shaded
+============================================================================= */
+[data-theme="cartoon"] {
+  --background:    #FFFDE7;
+  --foreground:    #000000;
+  --surface:       #FFFFFF;
+  --surface-warm:  #FFF9C4;
+  --surface-glass: rgba(255, 253, 231, 0.95);
+  --border:        #000000;
+  --border-strong: #000000;
+
+  --primary:       #FF3B3F;
+  --primary-hover: #CC2A2D;
+  --primary-pale:  #FFE0E0;
+  --primary-rgb:   255, 59, 63;
+
+  --danger:        #FF6B00;
+  --danger-hover:  #CC5500;
+  --text-muted:    #444444;
+
+  --radius:    8px;
+  --radius-lg: 14px;
+
+  /* Offset solid shadows — the cartoon signature */
+  --shadow-sm:   3px 3px 0 #000000;
+  --shadow-md:   4px 4px 0 #000000;
+  --shadow-lg:   6px 6px 0 #000000;
+  --shadow-glow: 4px 4px 0 rgba(255, 59, 63, 0.7);
+
+  --gradient-main:    linear-gradient(135deg, #FF3B3F 0%, #FF9500 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255, 253, 231, 0) 0%, rgba(255, 253, 231, 1) 100%);
+}
+
+/* Halftone dot overlay */
+[data-theme="cartoon"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+[data-theme="cartoon"] .navbar {
+  border-bottom: 3px solid #000;
+  box-shadow: 0 3px 0 #000;
+}
+
+[data-theme="cartoon"] .navbar::after {
+  display: none;
+}
+
+[data-theme="cartoon"] .guitar-card {
+  border: 2.5px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  border-radius: 10px;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+[data-theme="cartoon"] .guitar-card:hover {
+  box-shadow: 7px 7px 0 #000;
+  transform: translate(-2px, -2px);
+  border-color: #000;
+}
+
+[data-theme="cartoon"] .btn {
+  border: 2px solid #000 !important;
+  box-shadow: 3px 3px 0 #000;
+  border-radius: 8px !important;
+  transition: box-shadow 0.12s ease, transform 0.12s ease !important;
+}
+
+[data-theme="cartoon"] .btn:hover:not(:disabled) {
+  box-shadow: 5px 5px 0 #000 !important;
+  transform: translate(-1px, -1px);
+}
+
+[data-theme="cartoon"] .btn:active:not(:disabled) {
+  box-shadow: 1px 1px 0 #000 !important;
+  transform: translate(2px, 2px);
+}
+
+[data-theme="cartoon"] .btn-primary {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
+
+[data-theme="cartoon"] .btn-ghost {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+[data-theme="cartoon"] .auth-card,
+[data-theme="cartoon"] .guitar-form {
+  border: 2.5px solid #000 !important;
+  border-top: 2.5px solid #000 !important;
+  box-shadow: 5px 5px 0 #000;
+  border-radius: 12px;
+}
+
+[data-theme="cartoon"] .badge {
+  border: 2px solid #000 !important;
+  font-weight: 900;
+  border-radius: 6px;
+}
+
+[data-theme="cartoon"] .badge-type {
+  background: #FFE0E0;
+  color: #000;
+}
+
+[data-theme="cartoon"] .badge-condition {
+  background: #CCFFCC;
+  color: #000;
+  border-color: #000;
+}
+
+[data-theme="cartoon"] .form-group input,
+[data-theme="cartoon"] .form-group select,
+[data-theme="cartoon"] .form-group textarea {
+  border: 2px solid #000;
+  border-radius: 8px;
+}
+
+[data-theme="cartoon"] .form-group input:focus,
+[data-theme="cartoon"] .form-group select:focus,
+[data-theme="cartoon"] .form-group textarea:focus {
+  box-shadow: 3px 3px 0 #000;
+}
+
+[data-theme="cartoon"] .user-card-link {
+  border: 2.5px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  border-radius: 10px;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+[data-theme="cartoon"] .user-card-link:hover {
+  box-shadow: 7px 7px 0 #000;
+  transform: translate(-2px, -2px);
+}
+
+/* =============================================================================
    BASE STYLES
 ============================================================================= */
 html, body {

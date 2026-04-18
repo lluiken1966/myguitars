@@ -91,3 +91,7 @@ Database schema: run `mariadb_schema.sql`, then any `mariadb_migration_*.sql` fi
 - **`revalidatePath()`** after every mutation in server actions to bust the Next.js cache.
 - **TypeORM decorators** require `"experimentalDecorators": true` and `"emitDecoratorMetadata": true` (already set in `tsconfig.json`).
 - Guitar `type` and `condition` fields use TypeScript string literal union types — keep Zod enum and TypeORM column `enum` in sync.
+
+## deploying
+after each change made ask if you should deploy 
+use the ssh-deploy script. you can edit the script if needed.
