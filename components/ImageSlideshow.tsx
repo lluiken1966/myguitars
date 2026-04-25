@@ -46,7 +46,14 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
     const [zoom, setZoom] = useState(1);
     const [pan, setPan] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
+
+    const zoomRef = useRef(zoom);
+    const panRef = useRef(pan);
     const dragOrigin = useRef({ mouseX: 0, mouseY: 0, panX: 0, panY: 0 });
+    const lightboxRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => { zoomRef.current = zoom; }, [zoom]);
+    useEffect(() => { panRef.current = pan; }, [pan]);
 
     if (!images || images.length === 0) return null;
 
@@ -71,7 +78,7 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
         });
     };
 
-    // Keyboard nav + ESC
+    // Keyboard nav
     useEffect(() => {
         if (!lightboxOpen) return;
         const onKey = (e: KeyboardEvent) => {
@@ -85,13 +92,106 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
         return () => window.removeEventListener("keydown", onKey);
     }, [lightboxOpen, images.length]);
 
-    // Mouse wheel zoom inside lightbox
-    const handleWheel = (e: React.WheelEvent) => {
-        e.preventDefault();
-        adjustZoom(e.deltaY < 0 ? 0.25 : -0.25);
-    };
+    // Non-passive wheel + touch — must be added via useEffect so we can set passive:false
+    useEffect(() => {
+        if (!lightboxOpen) return;
+        const el = lightboxRef.current;
+        if (!el) return;
 
-    // Drag-to-pan handlers
+        const onWheel = (e: WheelEvent) => {
+            e.preventDefault();
+            setZoom(prev => {
+                const next = Math.min(5, Math.max(1, prev + (e.deltaY < 0 ? 0.25 : -0.25)));
+                if (next === 1) setPan({ x: 0, y: 0 });
+                return next;
+            });
+        };
+
+        const touchState = {
+            startTouches: [] as { x: number; y: number }[],
+            pinchStartDist: 0,
+            pinchStartZoom: 1,
+            panAtStart: { x: 0, y: 0 },
+            lastTapTime: 0,
+        };
+
+        const pts = (tl: TouchList) => Array.from(tl).map(t => ({ x: t.clientX, y: t.clientY }));
+        const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+            Math.hypot(b.x - a.x, b.y - a.y);
+
+        const onTouchStart = (e: TouchEvent) => {
+            const points = pts(e.touches);
+            const now = Date.now();
+
+            if (e.touches.length === 1) {
+                if (now - touchState.lastTapTime < 300) {
+                    // Double-tap: toggle 2.5× zoom
+                    if (zoomRef.current <= 1) {
+                        setZoom(2.5);
+                    } else {
+                        setZoom(1);
+                        setPan({ x: 0, y: 0 });
+                    }
+                }
+                touchState.lastTapTime = now;
+            }
+
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                touchState.pinchStartDist = dist(points[0], points[1]);
+                touchState.pinchStartZoom = zoomRef.current;
+            }
+
+            touchState.startTouches = points;
+            touchState.panAtStart = { ...panRef.current };
+        };
+
+        const onTouchMove = (e: TouchEvent) => {
+            e.preventDefault();
+            const points = pts(e.touches);
+
+            if (e.touches.length === 2 && touchState.pinchStartDist > 0) {
+                const ratio = dist(points[0], points[1]) / touchState.pinchStartDist;
+                const newZoom = Math.min(5, Math.max(1, touchState.pinchStartZoom * ratio));
+                setZoom(newZoom);
+                if (newZoom <= 1) setPan({ x: 0, y: 0 });
+            } else if (e.touches.length === 1 && touchState.startTouches.length >= 1 && zoomRef.current > 1) {
+                setPan({
+                    x: touchState.panAtStart.x + points[0].x - touchState.startTouches[0].x,
+                    y: touchState.panAtStart.y + points[0].y - touchState.startTouches[0].y,
+                });
+            }
+        };
+
+        const onTouchEnd = (e: TouchEvent) => {
+            if (e.changedTouches.length === 1 && touchState.startTouches.length === 1 && zoomRef.current <= 1 && images.length > 1) {
+                const dx = e.changedTouches[0].clientX - touchState.startTouches[0].x;
+                const dy = Math.abs(e.changedTouches[0].clientY - touchState.startTouches[0].y);
+                if (Math.abs(dx) > 50 && dy < 80) {
+                    setCurrentIndex(prev => dx < 0
+                        ? (prev + 1) % images.length
+                        : (prev - 1 + images.length) % images.length
+                    );
+                    setZoom(1);
+                    setPan({ x: 0, y: 0 });
+                }
+            }
+        };
+
+        el.addEventListener("wheel", onWheel, { passive: false });
+        el.addEventListener("touchstart", onTouchStart, { passive: false });
+        el.addEventListener("touchmove", onTouchMove, { passive: false });
+        el.addEventListener("touchend", onTouchEnd);
+
+        return () => {
+            el.removeEventListener("wheel", onWheel);
+            el.removeEventListener("touchstart", onTouchStart);
+            el.removeEventListener("touchmove", onTouchMove);
+            el.removeEventListener("touchend", onTouchEnd);
+        };
+    }, [lightboxOpen, images.length]);
+
+    // Mouse drag-to-pan
     const onDragStart = (e: React.MouseEvent) => {
         if (zoom <= 1) return;
         e.preventDefault();
@@ -111,7 +211,7 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
 
     return (
         <>
-            {/* Slideshow thumbnail */}
+            {/* Thumbnail */}
             <div
                 className="slideshow-container"
                 style={{
@@ -179,9 +279,10 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
                 )}
             </div>
 
-            {/* Lightbox overlay */}
+            {/* Lightbox */}
             {lightboxOpen && (
                 <div
+                    ref={lightboxRef}
                     style={{
                         position: "fixed",
                         inset: 0,
@@ -192,7 +293,7 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
                         justifyContent: "center",
                     }}
                 >
-                    {/* Zoom controls + close */}
+                    {/* Controls */}
                     <div
                         style={{
                             position: "absolute",
@@ -231,10 +332,10 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
                             whiteSpace: "nowrap",
                         }}
                     >
-                        Scroll to zoom · Drag to pan · ESC to close
+                        Scroll/pinch to zoom · Double-tap to zoom · Drag to pan · ESC to close
                     </div>
 
-                    {/* Image + drag area */}
+                    {/* Image + drag/touch area */}
                     <div
                         style={{
                             width: "100%",
@@ -245,7 +346,6 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
                             overflow: "hidden",
                             cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-out",
                         }}
-                        onWheel={handleWheel}
                         onMouseDown={onDragStart}
                         onMouseMove={onDragMove}
                         onMouseUp={onDragEnd}
@@ -271,7 +371,6 @@ export default function ImageSlideshow({ images, alt = "Guitar", isCard = false 
                         />
                     </div>
 
-                    {/* Nav arrows in lightbox */}
                     {hasMultiple && (
                         <>
                             <button
